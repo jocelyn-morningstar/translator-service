@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route("/")
 def translator():
     content = request.args.get("content", default = "", type = str)
-    is_english, translated_content = translate_content(content)
+    is_english, translated_content = translate_content("Dies ist eine Nachricht auf Deutsch")
     return jsonify({
         "is_english": is_english,
         "translated_content": translated_content,
