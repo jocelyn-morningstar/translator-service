@@ -1,4 +1,5 @@
 import os
+api_key = os.environ.get('OPENAI_API_KEY')
 #from openai import OpenAI
 #client  = OpenAI(api_key = os.environ.get('OPENAI_API_KEY'))
 
@@ -12,5 +13,5 @@ def translate_content(content: str) -> tuple[bool, str]:
       #  ])
     #llmresponse = completion.choices[0].message
     #translation = llmresponse.content
-    translation = "dummy response"
+    translation = api_key
     return True, translation
