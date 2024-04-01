@@ -7,7 +7,7 @@ def translate_content(inContent: str) -> 'tuple[bool, str]':
     content = inContent.strip()
     if len(content) == 0:
         return True, content
-    prompt = "True or false is the following text written entirely in English: "
+    prompt = "Is the following text written entirely in English? (True or False):"
     completion = client.chat.completions.create(
     model = "gpt-3.5-turbo",
     messages = [
@@ -17,7 +17,7 @@ def translate_content(inContent: str) -> 'tuple[bool, str]':
     isEnglish = llmresponse.content == "True"
 
     if (not isEnglish):
-        prompt = "Translate the following text into English: "
+        prompt = "Translate the following text into English (give only the English translation): "
         completion = client.chat.completions.create(
         model = "gpt-3.5-turbo",
         messages = [

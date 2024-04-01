@@ -1,4 +1,4 @@
-from test_translator import *
+from .test_translator import *
 
 test_chinese()
 test_llm_normal_response()
