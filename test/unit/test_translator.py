@@ -38,7 +38,6 @@ class Tester:
         return abs(1 - similarity) < tolerance
         
     def run_test(self, content, englishness, real_translation) -> 'bool':
-        sleep(5)
         is_english, translated_content = translate_content(content)
         
         if self.verbose:
@@ -46,7 +45,6 @@ class Tester:
             print(f"Returned string: {translated_content} (expected: {real_translation})")
         
         result = (is_english == englishness) and self.compare(englishness, real_translation, translated_content)
-        sleep(5)
         return result
         
     def run_all_queued_tests(self):
@@ -160,7 +158,7 @@ def test_llm_normal_response():
 
 
 def test_llm_gibberish_response():
-    tester = Tester()
+    tester = Tester(simple=True)
     
     print("Running tests for llm_gibberish_response.")
     
