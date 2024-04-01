@@ -2,7 +2,7 @@ import os
 from openai import OpenAI
 client  = OpenAI(api_key = os.environ.get('OPENAI_API_KEY'))
 
-
+#this translates foreign language in inContent to English
 def translate_content(inContent: str) -> 'tuple[bool, str]':
     content = inContent.strip()
     if len(content) == 0:
