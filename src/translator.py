@@ -1,40 +1,45 @@
-#import os
-#from openai import OpenAI
-#client  = OpenAI(api_key = os.environ.get('OPENAI_API_KEY'))
+import os
+from openai import OpenAI
+client  = OpenAI(api_key = os.environ.get('OPENAI_API_KEY'))
 
-#this is a mock translator
-#this translates foreign language inContent to English
-def translate_content(content: str) -> tuple[bool, str]:
-    if content == "这是一条中文消息":
-        return False, "This is a Chinese message"
-    if content == "Ceci est un message en français":
-        return False, "This is a French message"
-    if content == "Esta es un mensaje en español":
-        return False, "This is a Spanish message"
-    if content == "Esta é uma mensagem em português":
-        return False, "This is a Portuguese message"
-    if content  == "これは日本語のメッセージです":
-        return False, "This is a Japanese message"
-    if content == "이것은 한국어 메시지입니다":
-        return False, "This is a Korean message"
-    if content == "Dies ist eine Nachricht auf Deutsch":
-        return False, "This is a German message"
-    if content == "Questo è un messaggio in italiano":
-        return False, "This is an Italian message"
-    if content == "Это сообщение на русском":
-        return False, "This is a Russian message"
-    if content == "هذه رسالة باللغة العربية":
-        return False, "This is an Arabic message"
-    if content == "यह हिंदी में संदेश है":
-        return False, "This is a Hindi message"
-    if content == "นี่คือข้อความภาษาไทย":
-        return False, "This is a Thai message"
-    if content == "Bu bir Türkçe mesajdır":
-        return False, "This is a Turkish message"
-    if content == "Đây là một tin nhắn bằng tiếng Việt":
-        return False, "This is a Vietnamese message"
-    if content == "Esto es un mensaje en catalán":
-        return False, "This is a Catalan message"
-    if content == "This is an English message":
-        return True, "This is an English message"
-    return True, content
+#  Translate any foreign language in "inContent" to English; leave alone if
+#  already English or cannot be translated into valid English.  Returns a
+#  tuple: (bool, string)   If the bool is true, the string will just be
+#  the original text in "inContent"; if the bool is false, the string will
+#  be a translated text.  In other words, the first "bool" returned indicates
+#  if "inContent" was return unchanged
+
+def translate_content(inContent: str) -> tuple[bool, str]:
+
+    content = inContent.strip()
+    if len(content) == 0:
+        return (True, content)
+    try:
+       prompt = "What is the language used in the following text: "
+       completion = client.chat.completions.create(
+       model = "gpt-3.5-turbo",
+       messages = [
+           {"role": "user", "content": prompt + content}
+           ])
+       llmresponse = completion.choices[0].message
+       noChange = ("english" in llmresponse.content.lower())
+       if (not noChange):
+           prompt = "Translate the text or sequence of words after the first colon into English if "
+           prompt += "possible, else return only 'Not possible': "
+           completion = client.chat.completions.create(
+           model = "gpt-3.5-turbo",
+           messages = [
+               {"role": "user", "content": prompt + content}
+               ])
+           llmresponse = completion.choices[0].message
+           translation = llmresponse.content
+           if (translation.strip().lower() == "not possible"):
+               noChange = True
+               translation = content
+       else:
+           translation = content
+       return (noChange, translation)
+
+    except Exception as e:
+       return (False, f"Error: {str(e)}")
+      
