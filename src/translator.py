@@ -42,3 +42,4 @@ def translate_content(inContent: str) -> tuple[bool, str]:
 
     except Exception as e:
        return (False, f"Error: {str(e)}")
+      
